@@ -1,0 +1,75 @@
+esphome:
+  name: px700hd
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: "XXXXX"
+  password: "XXXXXX"
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Px700Hd Fallback Hotspot"
+    password: "XXXXXXXXXXXXX"
+
+captive_portal:
+
+# Enable logging
+logger:
+  level: VERBOSE
+#  baud_rate: 9600
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+uart:
+#  baud_rate: 115200
+  baud_rate: 9600
+  tx_pin: D3
+  rx_pin: D4
+#  tx_pin: TX
+#  rx_pin: RX
+  stop_bits: 1
+
+#binary_sensor:
+#  - platform: uart
+#    name: test_uart
+
+
+
+switch:
+
+#  - platform: template
+#    name: "PX700HD"
+#    turn_on_action:
+#    - switch.turn_on: PX700HD_On
+#    turn_off_action:
+#    - switch.turn_on: PX700HD_Off
+#    optimistic: true
+
+#  - platform: uart
+#    id: "PX700HD_On"
+#    data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]
+
+#  - platform: uart
+#    id: "PX700HD_Off"
+#    data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x01, 0x00, 0x5E]
+    
+#  - platform: uart
+#    id: "PX700HD_State"
+#    data: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
+
+  - platform: uart
+    name: "PX700HD_On"
+    data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]
+
+  - platform: uart
+    name: "PX700HD_Off"
+    data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x01, 0x00, 0x5E]
+    
+  - platform: uart
+    name: "PX700HD_State"
+    data: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
+
