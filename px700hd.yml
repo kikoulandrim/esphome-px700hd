@@ -4,20 +4,27 @@ esphome:
   board: d1_mini
 
 wifi:
-  ssid: "XXXXX"
-  password: "XXXXXX"
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Px700Hd Fallback Hotspot"
-    password: "XXXXXXXXXXXXX"
+    ssid: "${esp_name} Fallback Hotspot"
+    password: !secret ap_pwd
 
 captive_portal:
 
 # Enable logging
 logger:
-  level: VERBOSE
-#  baud_rate: 9600
+  level: VERY_VERBOSE
+  baud_rate: 9600
+#  hardware_uart: UART0
+#  baud_rate: 0
+#  logs:
+#    uart_esp8266: VERY_VERBOSE
+#    api.service: NONE
+  
+
 
 # Enable Home Assistant API
 api:
@@ -29,8 +36,8 @@ uart:
   baud_rate: 9600
 #  tx_pin: D3
 #  rx_pin: D4
-  tx_pin: D4
-  rx_pin: D3  
+  tx_pin: D5
+  rx_pin: D6
 #  tx_pin: TX
 #  rx_pin: RX
   stop_bits: 1
