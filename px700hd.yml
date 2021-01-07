@@ -2,55 +2,52 @@ esphome:
   name: px700hd
   platform: ESP8266
   board: d1_mini
+  includes:
+    - uart_read_px700hd.h
 
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_pwd
 
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
     ssid: "${esp_name} Fallback Hotspot"
     password: !secret ap_pwd
 
 captive_portal:
 
-# Enable logging
+
 logger:
   level: VERY_VERBOSE
-#  baud_rate: 9600
-#  hardware_uart: UART0
   baud_rate: 0
-#  logs:
-#    uart_esp8266: VERY_VERBOSE
-#    api.service: NONE
-  
 
 
-# Enable Home Assistant API
 api:
+
 
 ota:
 
+
 uart:
-#  baud_rate: 115200
+  id: uart_bus
   baud_rate: 9600
-#  tx_pin: D3
-#  rx_pin: D4
-  tx_pin: D5
-  rx_pin: D6
-#  tx_pin: TX
-#  rx_pin: RX
+  tx_pin: TX
+  rx_pin: RX
   stop_bits: 1
-
-#binary_sensor:
-#  - platform: uart
-#    name: test_uart
-
 
 interval:
   - interval: 10s
     then:
       - uart.write: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
+
+
+sensor:
+- platform: custom
+  lambda: |-
+      auto px700hd_sensor = new px700hdSensor(id(uart_bus));
+      App.register_component(px700hd_sensor);
+      return {px700hd_sensor};
+  sensors:
+    name: "px700hd State"
 
 
 switch:
