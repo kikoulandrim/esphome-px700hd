@@ -2,6 +2,7 @@
 ## esphome projector px700hd uart custom component
 
 This is a esphome custom component to switch on and off a px700hd projector.
+
 It also return the state of the ph700hd.
 
 It only use the last 2 bytes returned by the px700hd.
