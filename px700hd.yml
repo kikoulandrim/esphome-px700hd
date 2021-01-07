@@ -10,14 +10,13 @@ wifi:
   password: !secret wifi_pwd
 
   ap:
-    ssid: "${esp_name} Fallback Hotspot"
+    ssid: "px700hd Fallback Hotspot"
     password: !secret ap_pwd
 
 captive_portal:
 
 
 logger:
-  level: VERY_VERBOSE
   baud_rate: 0
 
 
@@ -35,7 +34,7 @@ uart:
   stop_bits: 1
 
 interval:
-  - interval: 10s
+  - interval: 5s
     then:
       - uart.write: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
 
@@ -48,6 +47,7 @@ sensor:
       return {px700hd_sensor};
   sensors:
     name: "px700hd State"
+    id: sensuartpx700
 
 
 switch:
@@ -55,6 +55,12 @@ switch:
   - platform: template
     name: "PX700HD"
     icon: mdi:projector
+    lambda: |-
+      if (id(sensuartpx700).state == 1) {
+        return true;
+      } else {
+        return false;
+      }
     turn_on_action:
     - switch.turn_on: PX700HD_On
     turn_off_action:
