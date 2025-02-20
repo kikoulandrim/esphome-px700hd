@@ -1,7 +1,7 @@
 {
   "name": "Esphome PX700HD",
   "version": "0.0.1",
-  "dependencies": ["api"],
+  "dependencies": ["api", "sensor"],
   "codeowners": ["@kikoulandrim"],
   "requirements": [],
   "documentation": "https://github.com/kikoulandrim/esphome-px700hd",
