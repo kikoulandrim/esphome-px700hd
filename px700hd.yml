@@ -1,9 +1,13 @@
 esphome:
   name: px700hd
-  platform: ESP8266
+
+external_components:
+  - source: github://eigger/espcomponents/releases/latest
+    components: [ uartex ]
+    refresh: always
+
+esp8266:
   board: d1_mini
-  includes:
-    - uart_read_px700hd.h
 
 wifi:
   ssid: !secret wifi_ssid
@@ -24,53 +28,107 @@ api:
 
 
 ota:
+  - platform: esphome
 
 
 uart:
-  id: uart_bus
   baud_rate: 9600
+  data_bits: 8
+  parity: NONE
+  stop_bits: 1
   tx_pin: TX
   rx_pin: RX
-  stop_bits: 1
+  #debug:
 
-interval:
-  - interval: 5s
-    then:
-      - uart.write: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
+#interval:
+#  - interval: 5s
+#    then:
+#      - uart.write: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
 
 
-sensor:
-- platform: custom
-  lambda: |-
-      auto px700hd_sensor = new px700hdSensor(id(uart_bus));
-      App.register_component(px700hd_sensor);
-      return {px700hd_sensor};
-  sensors:
-    name: "px700hd State"
-    id: sensuartpx700
+uartex:
+  rx_timeout: 60ms
+  tx_delay: 60ms
+  tx_timeout: 60ms
+  tx_retry_cnt: 3
+  rx_length: 9
+  rx_header: [0x05, 0x14, 0x00, 0x03]
+  #rx_checksum: !lambda |-
+  #    uint8_t crc = 0;
+  #    for (int i = 0; i < len; i++)
+  #    {
+  #      crc += data[i];
+  #    }
+  #    crc -= data[0];
+  #    return crc;
+
+
+  #rx_footer: [0x0D, 0x0A]
+  #tx_header: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11]
+  #tx_footer: [0x0D, 0x0A]
+
+  #rx_checksum: add
+
+
+  #tx_checksum: add
+
+  version:
+    disabled: False
+  error:
+    disabled: False
+  log:
+    disabled: True
+
+
+#binary_sensor:
+#  - platform: uartex
+#    name: Yolo
+#    state: 
+#      data: [0x00, 0x00, 0x00]
+#      mask: [0xFF, 0xFF, 0xFF]
+#    state_on:
+#      offset: 3
+#      data: [0x01, 0x18]
+#    state_off:
+#      offset: 3
+#      data: [0x00, 0x17]
+#    update_interval: 5s
+#    command_update:
+#      data: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]    
+
+#number:
+#  - platform: uartex
+#    name: "Number1"
+#    state:
+#      data: [0x00, 0x00, 0x00]
+#      mask: [0xFF, 0xFF, 0xFF]
+#    max_value: 1024
+#    min_value: 1
+#    step: 1
+#    state_number:
+#      offset: 3
+#      length: 2
+#      precision: 0
+
+
 
 
 switch:
-
-  - platform: template
+  - platform: uartex
     name: "PX700HD"
     icon: mdi:projector
-    lambda: |-
-      if (id(sensuartpx700).state == 1) {
-        return true;
-      } else {
-        return false;
-      }
-    turn_on_action:
-    - switch.turn_on: PX700HD_On
-    turn_off_action:
-    - switch.turn_on: PX700HD_Off
-    optimistic: true
-
-  - platform: uart
-    id: "PX700HD_On"
-    data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]
-
-  - platform: uart
-    id: "PX700HD_Off"
-    data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x01, 0x00, 0x5E]
+    state: 
+      data: [0x00, 0x00, 0x00]
+      mask: [0xFF, 0xFF, 0xFF]
+    state_on:
+      offset: 3
+      data: [0x01, 0x18]
+    state_off:
+      offset: 3
+      data: [0x00, 0x17]
+    update_interval: 5s
+    command_update: [0x07, 0x14, 0x00, 0x05, 0x00, 0x34, 0x00, 0x00, 0x11, 0x00, 0x5E]
+    command_on:
+      data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x00, 0x00, 0x5D]
+    command_off:
+      data: [0x06, 0x14, 0x00, 0x04, 0x00, 0x34, 0x11, 0x01, 0x00, 0x5E]
