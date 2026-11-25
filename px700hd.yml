@@ -2,7 +2,7 @@ esphome:
   name: px700hd
 
 external_components:
-  - source: github://eigger/espcomponents/releases/latest
+  - source: github://eigger/espcomponents@latest
     components: [ uartex ]
     refresh: always
 
@@ -25,6 +25,8 @@ logger:
 
 
 api:
+  encryption:
+    key: !secret px700hd__encryption_key
 
 
 ota:
